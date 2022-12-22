@@ -1,7 +1,7 @@
 .template:build:
   image: docker:stable
   tags:
-    - docker
+    - kicad-dind
   services:
     - docker:dind
   stage: build
