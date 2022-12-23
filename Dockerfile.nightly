@@ -107,7 +107,8 @@ RUN apt-get update && \
     unixodbc \
     zlib1g \
     shared-mime-info \
-    git
+    git \
+    sudo
 
 
 COPY --from=build /usr/local/bin /usr/local/bin
@@ -123,6 +124,7 @@ RUN apt-get clean autoclean; \
     rm -rf /var/lib/apt/lists/*
 
 RUN groupadd --gid $USER_GID $USER_NAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME
+    && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \
+    && usermod -aG sudo $USER_NAME
 
 USER $USER_NAME
