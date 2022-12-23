@@ -125,6 +125,7 @@ RUN apt-get clean autoclean; \
 
 RUN groupadd --gid $USER_GID $USER_NAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \
-    && usermod -aG sudo $USER_NAME
+    && usermod -aG sudo $USER_NAME \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER $USER_NAME
