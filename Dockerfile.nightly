@@ -33,6 +33,8 @@ RUN set -ex;            \
     
 WORKDIR /src/kicad
 
+# We want the built install prefix in /usr to match normal system installed software
+# However to aid in docker copying only our files, we redirect the prefix in the cmake install
 RUN set -ex; \
     mkdir -p build/linux; \
     cd build/linux; \
@@ -44,39 +46,43 @@ RUN set -ex; \
       -DKICAD_SPICE=ON \
       -DKICAD_BUILD_I18N=ON \
       -DKICAD_USE_EGL=ON \
+      -DCMAKE_INSTALL_PREFIX=/usr \
       ../../; \
     ninja; \
-    ninja install
+    cmake --install . --prefix=/usr/local/
 
 RUN set -ex; \
     cd /src/kicad-symbols; \
     cmake \
       -G Ninja \
-      -DCMAKE_RULE_MESSAGES:BOOL=OFF \
-      -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
+      -DCMAKE_RULE_MESSAGES=OFF \
+      -DCMAKE_VERBOSE_MAKEFILE=OFF \
+      -DCMAKE_INSTALL_PREFIX=/usr \
       . \
     ninja; \
-    ninja install
+    cmake --install . --prefix=/usr/local/
 
 RUN set -ex; \
     cd /src/kicad-footprints; \
     cmake \
       -G Ninja \
-      -DCMAKE_RULE_MESSAGES:BOOL=OFF \
-      -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
+      -DCMAKE_RULE_MESSAGES=OFF \
+      -DCMAKE_VERBOSE_MAKEFILE=OFF \
+      -DCMAKE_INSTALL_PREFIX=/usr \
       . \
     ninja; \
-    ninja install
+    cmake --install . --prefix=/usr/local/
 
 RUN set -ex; \
     cd /src/kicad-templates; \
     cmake \
       -G Ninja \
-      -DCMAKE_RULE_MESSAGES:BOOL=OFF \
-      -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF \
+      -DCMAKE_RULE_MESSAGES=OFF \
+      -DCMAKE_VERBOSE_MAKEFILE=OFF \
+      -DCMAKE_INSTALL_PREFIX=/usr \
       . \
     ninja; \
-    ninja install
+    cmake --install . --prefix=/usr/local/
     
 FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
@@ -111,12 +117,12 @@ RUN apt-get update && \
     sudo
 
 
-COPY --from=build /usr/local/bin /usr/local/bin
-COPY --from=build /usr/local/share /usr/local/share
-COPY --from=build /usr/local/lib /usr/local/lib
+COPY --from=build /usr/local/bin /usr/bin
+COPY --from=build /usr/local/share /usr/share
+COPY --from=build /usr/local/lib /usr/lib
 
 # fix the linkage to libkicad_3dsg
-RUN ldconfig -l /usr/local/bin/_pcbnew.kiface
+RUN ldconfig -l /usr/bin/_pcbnew.kiface
 
 # cleanup
 RUN apt-get clean autoclean; \
