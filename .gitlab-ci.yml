@@ -23,7 +23,7 @@ stages:
     - docker build --pull -t ${CONTAINER_IMAGE} -f ${DOCKERFILE_PATH} .
     - docker tag ${CONTAINER_IMAGE} ${GL_CONTAINER}
     - docker push ${GL_CONTAINER}
-    - echo "${CONTAINER_IMAGE}" >> built_tag.txt
+    - echo "${CONTAINER_IMAGE}" >> built_image.txt
     - echo "${GL_CONTAINER}" >> built_gl_path.txt
   artifacts:
     paths:
@@ -42,7 +42,7 @@ stages:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker login -u ${DH_USER} -p ${DH_PASSWORD} docker.io
   script:
-    - CONTAINER_IMAGE=$(cat built_tag.txt)
+    - CONTAINER_IMAGE=$(cat built_image.txt)
     - GL_CONTAINER=$(cat built_gl_path.txt)
     - DH_CONTAINER=index.docker.io/kicad/$(CONTAINER_IMAGE)
     - docker pull ${GL_CONTAINER}
