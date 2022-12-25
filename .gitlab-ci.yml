@@ -14,15 +14,21 @@ stages:
     - docker:dind
   stage: build
   variables:
-    CONTAINER_NAME: ${CONTAINER_IMAGE}:${CONTAINER_TAG}
-    GL_CONTAINER: ${GL_CONTAINER_ROOT}/${CONTAINER_NAME}
+    CONTAINER_IMAGE: ${CONTAINER_NAME}:${CONTAINER_TAG}
+    GL_CONTAINER: ${GL_CONTAINER_ROOT}/${CONTAINER_IMAGE}
   before_script:
     - docker info
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   script:
-    - docker build --pull -t ${CONTAINER_NAME} -f ${DOCKERFILE_PATH} .
-    - docker tag ${CONTAINER_NAME} ${GL_CONTAINER}
+    - docker build --pull -t ${CONTAINER_IMAGE} -f ${DOCKERFILE_PATH} .
+    - docker tag ${CONTAINER_IMAGE} ${GL_CONTAINER}
     - docker push ${GL_CONTAINER}
+    - echo "${CONTAINER_IMAGE}" >> built_tag.txt
+    - echo "${GL_CONTAINER}" >> built_gl_path.txt
+  artifacts:
+    paths:
+      - built_image.txt
+      - built_gl_path.txt
 
 .template:deploy_to_dh:
   image: docker:stable
@@ -31,21 +37,20 @@ stages:
   services:
     - docker:dind
   stage: deploy
-  variables:
-    CONTAINER_NAME: ${CONTAINER_IMAGE}:${CONTAINER_TAG}
-    GL_CONTAINER: ${GL_CONTAINER_ROOT}/${CONTAINER_NAME}
-    DH_CONTAINER: index.docker.io/kicad/${CONTAINER_NAME}
   before_script:
     - docker info
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker login -u ${DH_USER} -p ${DH_PASSWORD} docker.io
   script:
+    - CONTAINER_IMAGE=$(cat built_tag.txt)
+    - GL_CONTAINER=$(cat built_gl_path.txt)
+    - DH_CONTAINER=index.docker.io/kicad/$(CONTAINER_IMAGE)
     - docker pull ${GL_CONTAINER}
     - docker tag ${GL_CONTAINER} ${DH_CONTAINER}
     - docker push ${DH_CONTAINER}
 
 
-build nightly:
+build_nightly:
   extends: .template:build
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
@@ -53,11 +58,15 @@ build nightly:
   only:
     - triggers
     - web
+    - schedules
     
-deploy nightly:
+deploy_nightly:
   extends: .template:deploy_to_dh
+  dependencies:
+    - build_nightly
   variables:
     CONTAINER_TAG: nightly
   only:
     - triggers
     - web
+    - schedules
