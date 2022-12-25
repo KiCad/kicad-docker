@@ -42,12 +42,12 @@ stages:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker login -u ${DH_USER} -p ${DH_PASSWORD} docker.io
   script:
-    - CONTAINER_IMAGE=$(cat built_image.txt)
-    - GL_CONTAINER=$(cat built_gl_path.txt)
-    - DH_CONTAINER=index.docker.io/kicad/$(CONTAINER_IMAGE)
-    - docker pull ${GL_CONTAINER}
-    - docker tag ${GL_CONTAINER} ${DH_CONTAINER}
-    - docker push ${DH_CONTAINER}
+    - CONTAINER_IMAGE=$(cat built_image.txt); echo $CONTAINER_IMAGE
+    - GL_CONTAINER=$(cat built_gl_path.txt); echo $GL_CONTAINER
+    - DH_CONTAINER=index.docker.io/kicad/$CONTAINER_IMAGE; echo $DH_CONTAINER
+    - docker pull $GL_CONTAINER
+    - docker tag $GL_CONTAINER $DH_CONTAINER
+    - docker push $DH_CONTAINER
 
 
 build_nightly:
