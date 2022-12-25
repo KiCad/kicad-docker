@@ -1,5 +1,5 @@
 variables:
-  CONTAINER_IMAGE: kicad
+  CONTAINER_NAME: kicad
   GL_CONTAINER_ROOT: ${CI_REGISTRY}/${CI_PROJECT_PATH}
 
 stages:
