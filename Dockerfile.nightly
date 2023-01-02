@@ -45,7 +45,6 @@ RUN set -ex; \
       -DKICAD_USE_OCC=ON \
       -DKICAD_SPICE=ON \
       -DKICAD_BUILD_I18N=ON \
-      -DKICAD_USE_EGL=ON \
       -DCMAKE_INSTALL_PREFIX=/usr \
       ../../; \
     ninja; \
