@@ -96,7 +96,7 @@ RUN apt-get update && \
     libglew2.2 \ 
     libx11-6 \
     libwxgtk3.2* \
-    libpython3.10 \
+    libpython3.11 \
     python3 \ 
     python3-wxgtk4.0 \
     libcurl4 \
