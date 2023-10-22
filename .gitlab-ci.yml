@@ -75,10 +75,6 @@ deploy_nightly:
     - build_nightly
   variables:
     CONTAINER_TAG: nightly
-  only:
-    - triggers
-    - web
-    - schedules
   rules:
     - if: $KI_BUILD_TYPE == "daily"
     - if: $KI_BUILD_TYPE == "monthly"
@@ -91,7 +87,3 @@ deploy_7:
     - build_7
   variables:
     CONTAINER_TAG: "7.0"
-  only:
-    - triggers
-    - web
-    - schedules
