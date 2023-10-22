@@ -1,5 +1,5 @@
 FROM debian:bookworm AS build
-ARG KICAD_VERSION
+ARG KICAD_VERSION=7.0
 
 # install build dependencies 
 RUN apt-get update && \

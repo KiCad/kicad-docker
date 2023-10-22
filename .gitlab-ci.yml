@@ -26,7 +26,7 @@ stages:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   script:
     - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
-    - tag-helper.sh -c kicad:build-temp -t ${KI_BUILD_TYPE} -b ${CONTAINER_TAG} -r -i ${GL_CONTAINER}
+    - ./tag-helper.sh -c kicad:build-temp -t ${KI_BUILD_TYPE} -b ${CONTAINER_TAG} -r -i ${GL_CONTAINER}
   artifacts:
     paths:
       - docker_tags.txt
@@ -43,7 +43,7 @@ stages:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker login -u ${DH_USER} -p ${DH_PASSWORD} docker.io
   script:
-    - deploy-helper.sh -i index.docker.io/kicad/kicad
+    - ./deploy-helper.sh -i index.docker.io/kicad/kicad
 
 build_nightly:
   extends: .template:build
@@ -79,9 +79,14 @@ deploy_nightly:
     - triggers
     - web
     - schedules
+  rules:
+    - if: $KI_BUILD_TYPE == "daily"
+    - if: $KI_BUILD_TYPE == "monthly"
 
 deploy_7:
   extends: .template:deploy_to_dh
+  rules:
+    - if: $KI_BUILD_TYPE == "release"
   dependencies:
     - build_7
   variables:
