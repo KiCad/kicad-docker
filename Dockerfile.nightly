@@ -21,6 +21,8 @@ RUN apt-get update && \
     git \
     gettext \
     ninja-build \
+    libgit2-dev \
+    libsecret-1-dev \
     swig4.0
 
 WORKDIR /src
