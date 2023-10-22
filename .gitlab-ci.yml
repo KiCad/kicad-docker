@@ -65,7 +65,7 @@ build_7:
   extends: .template:build
   variables:
     DOCKERFILE_PATH: Dockerfile.7.0-stable
-    CONTAINER_TAG: 7.0
+    CONTAINER_TAG: "7.0"
   rules:
     - if: $KI_BUILD_TYPE == "release"
 
@@ -85,7 +85,7 @@ deploy_7:
   dependencies:
     - build_7
   variables:
-    CONTAINER_TAG: 7.0
+    CONTAINER_TAG: "7.0"
   only:
     - triggers
     - web
