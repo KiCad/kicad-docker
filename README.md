@@ -26,3 +26,8 @@ All stable release images will be retained indefinitely (at best effort).
 Nightly monthly tagged releases will be kept at best effort for up to a year after the next major release.
 
 Users are encouraged to move to a stable release image when able.
+
+## GitLab CI Usage
+KI_BUILD_TYPE=daily
+              monthly
+              release

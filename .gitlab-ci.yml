@@ -1,3 +1,9 @@
+# Pipeline schedule vars
+# KI_BUILD_TYPE
+#   daily
+#   monthly
+#   release
+
 variables:
   CONTAINER_NAME: kicad
   GL_CONTAINER_ROOT: ${CI_REGISTRY}/${CI_PROJECT_PATH}
@@ -14,21 +20,16 @@ stages:
     - docker:dind
   stage: build
   variables:
-    CONTAINER_IMAGE: ${CONTAINER_NAME}:${CONTAINER_TAG}
-    GL_CONTAINER: ${GL_CONTAINER_ROOT}/${CONTAINER_IMAGE}
+    GL_CONTAINER: ${GL_CONTAINER_ROOT}/${CONTAINER_NAME}
   before_script:
     - docker info
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   script:
-    - docker build --pull -t ${CONTAINER_IMAGE} -f ${DOCKERFILE_PATH} .
-    - docker tag ${CONTAINER_IMAGE} ${GL_CONTAINER}
-    - docker push ${GL_CONTAINER}
-    - echo "${CONTAINER_IMAGE}" >> built_image.txt
-    - echo "${GL_CONTAINER}" >> built_gl_path.txt
+    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
+    - tag-helper.sh -c kicad:build-temp -t ${KI_BUILD_TYPE} -b ${CONTAINER_TAG} -r -i ${GL_CONTAINER}
   artifacts:
     paths:
-      - built_image.txt
-      - built_gl_path.txt
+      - docker_tags.txt
 
 .template:deploy_to_dh:
   image: docker:stable
@@ -42,30 +43,49 @@ stages:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker login -u ${DH_USER} -p ${DH_PASSWORD} docker.io
   script:
-    - CONTAINER_IMAGE=$(cat built_image.txt); echo $CONTAINER_IMAGE
-    - GL_CONTAINER=$(cat built_gl_path.txt); echo $GL_CONTAINER
-    - DH_CONTAINER=index.docker.io/kicad/$CONTAINER_IMAGE; echo $DH_CONTAINER
-    - docker pull $GL_CONTAINER
-    - docker tag $GL_CONTAINER $DH_CONTAINER
-    - docker push $DH_CONTAINER
-
+    - deploy-helper.sh -i index.docker.io/kicad/kicad
 
 build_nightly:
   extends: .template:build
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
     CONTAINER_TAG: nightly
-  only:
-    - triggers
-    - web
-    - schedules
-    
+  rules:
+    - if: $KI_BUILD_TYPE == "daily"
+
+build_nightly_monthly:
+  extends: .template:build
+  variables:
+    DOCKERFILE_PATH: Dockerfile.nightly
+    CONTAINER_TAG: nightly
+  rules:
+    - if: $KI_BUILD_TYPE == "monthly"
+
+build_7:
+  extends: .template:build
+  variables:
+    DOCKERFILE_PATH: Dockerfile.7.0-stable
+    CONTAINER_TAG: 7.0
+  rules:
+    - if: $KI_BUILD_TYPE == "release"
+
 deploy_nightly:
   extends: .template:deploy_to_dh
   dependencies:
     - build_nightly
   variables:
     CONTAINER_TAG: nightly
+  only:
+    - triggers
+    - web
+    - schedules
+
+deploy_7:
+  extends: .template:deploy_to_dh
+  dependencies:
+    - build_7
+  variables:
+    CONTAINER_TAG: 7.0
   only:
     - triggers
     - web
