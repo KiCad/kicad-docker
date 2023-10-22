@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ash
 
 unset -v BUILD_TYPE
 unset -v TAG_BASE_NAME
