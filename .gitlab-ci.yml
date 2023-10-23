@@ -36,7 +36,7 @@ stages:
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER
+    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
     
 .template:build_release:
   extends: .template:build_base
@@ -45,7 +45,7 @@ stages:
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r $VERSION -i $GL_CONTAINER
+    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r $VERSION -i $GL_CONTAINER -p
 
 .template:deploy_to_dh:
   image: docker:stable
