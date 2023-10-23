@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/bash
 
 unset -v BUILD_TYPE
 unset -v TAG_BASE_NAME
@@ -62,7 +62,7 @@ if [[ "$BUILD_TYPE" == "monthly" ]]; then
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
 
     echo $CONTAINER_TAG >> docker_tags.txt
-    echo -n $CONTAINER_IMAGE >> docker_tags.txt
+    echo $CONTAINER_IMAGE >> docker_tags.txt
 
     if [ "$PUSH_IMAGE" = true ] ; then
         docker tag $ORIG_CONTAINER $CONTAINER_TAG
@@ -92,7 +92,7 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     CONTAINER_TAG="${FULL_VERSION}"
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
     echo $CONTAINER_TAG >> docker_tags.txt
-    echo -n $CONTAINER_IMAGE >> docker_tags.txt
+    echo $CONTAINER_IMAGE >> docker_tags.txt
     
     if [ "$PUSH_IMAGE" = true ] ; then
         docker tag $ORIG_CONTAINER $CONTAINER_TAG
@@ -108,7 +108,7 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
 
     echo $CONTAINER_TAG >> docker_tags.txt
-    echo -n $CONTAINER_IMAGE >> docker_tags.txt
+    echo $CONTAINER_IMAGE >> docker_tags.txt
 
     if [ "$PUSH_IMAGE" = true ] ; then
         docker tag $ORIG_CONTAINER $CONTAINER_TAG
