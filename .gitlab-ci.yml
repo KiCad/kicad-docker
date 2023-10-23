@@ -29,6 +29,9 @@ stages:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   script:
     - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
+    - echo $KI_BUILD_TYPE
+    - echo $CONTAINER_TAG
+    - echo $GL_CONTAINER
     - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r -i $GL_CONTAINER
   artifacts:
     paths:
