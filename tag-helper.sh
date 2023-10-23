@@ -65,8 +65,8 @@ if [[ "$BUILD_TYPE" == "monthly" ]]; then
     echo $CONTAINER_IMAGE >> docker_tags.txt
 
     if [ "$PUSH_IMAGE" = true ] ; then
-        docker tag $ORIG_CONTAINER $CONTAINER_TAG
-        docker push $CONTAINER_TAG
+        docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
+        docker push $CONTAINER_IMAGE
     fi
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     if [[ $RELEASE_TAG =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; 
@@ -85,8 +85,8 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     echo $CONTAINER_IMAGE >> docker_tags.txt
     
     if [ "$PUSH_IMAGE" = true ] ; then
-        docker tag $ORIG_CONTAINER $CONTAINER_TAG
-        docker push $CONTAINER_TAG
+        docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
+        docker push $CONTAINER_IMAGE
     fi
 
     CONTAINER_TAG="${FULL_VERSION}"
@@ -95,8 +95,8 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     echo $CONTAINER_IMAGE >> docker_tags.txt
     
     if [ "$PUSH_IMAGE" = true ] ; then
-        docker tag $ORIG_CONTAINER $CONTAINER_TAG
-        docker push $CONTAINER_TAG
+        docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
+        docker push $CONTAINER_IMAGE
     fi
 elif [[ "$BUILD_TYPE" == "daily" ]]; then
     if [[ -z "$TAG_BASE_NAME" ]]; then
@@ -111,8 +111,8 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
     echo $CONTAINER_IMAGE >> docker_tags.txt
 
     if [ "$PUSH_IMAGE" = true ] ; then
-        docker tag $ORIG_CONTAINER $CONTAINER_TAG
-        docker push $CONTAINER_TAG
+        docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
+        docker push $CONTAINER_IMAGE
     fi
 fi
 
