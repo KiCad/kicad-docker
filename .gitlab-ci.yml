@@ -12,7 +12,7 @@ stages:
   - build
   - deploy
 
-.template:build:
+.template:build_base:
   image: docker:stable
   tags:
     - kicad-dind
@@ -25,15 +25,27 @@ stages:
     - apk add --no-cache bash
     - docker info
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+  artifacts:
+    paths:
+      - docker_tags.txt
+    
+.template:build:
+  extends: .template:build_base
   script:
     - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
     - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER
-  artifacts:
-    paths:
-      - docker_tags.txt
+    
+.template:build_release:
+  extends: .template:build_base
+  script:
+    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} --build-arg="KICAD_VERSION=${VERSION}" .
+    - echo $KI_BUILD_TYPE
+    - echo $CONTAINER_TAG
+    - echo $GL_CONTAINER
+    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r $VERSION -i $GL_CONTAINER
 
 .template:deploy_to_dh:
   image: docker:stable
@@ -85,7 +97,7 @@ deploy_nightly_monthly:
     - if: $KI_BUILD_TYPE == "monthly"
 
 build_7:
-  extends: .template:build
+  extends: .template:build_release
   variables:
     DOCKERFILE_PATH: Dockerfile.7.0-stable
     CONTAINER_TAG: "7.0"
