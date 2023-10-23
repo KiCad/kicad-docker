@@ -26,5 +26,5 @@ do
     echo "Creating tagged image: $NEW_IMAGE"
     docker pull $GLIMAGE
     docker tag $GLIMAGE $NEW_IMAGE
-    docker push "$IMAGE_BASE_NAME:$tag"
+    docker push $NEW_IMAGE
 done < "docker_tags.txt"
