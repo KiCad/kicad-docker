@@ -114,7 +114,7 @@ RUN apt-get update && \
     zlib1g \
     shared-mime-info \
     git \
-    libgit2 \
+    libgit2-1.5 \
     libsecret-1-0 \
     sudo
 
