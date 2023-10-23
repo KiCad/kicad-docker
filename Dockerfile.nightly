@@ -136,4 +136,10 @@ RUN groupadd --gid $USER_GID $USER_NAME \
     && usermod -aG sudo $USER_NAME \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
+
+RUN mv /usr/share/kicad/template/*-lib-table /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
+
+RUN chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
+
 USER $USER_NAME
