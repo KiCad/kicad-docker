@@ -58,10 +58,28 @@ build_nightly:
   rules:
     - if: $KI_BUILD_TYPE == "daily"
 
+deploy_nightly:
+  extends: .template:deploy_to_dh
+  dependencies:
+    - build_nightly
+  variables:
+    CONTAINER_TAG: nightly
+  rules:
+    - if: $KI_BUILD_TYPE == "daily"
+  
 build_nightly_monthly:
   extends: .template:build
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
+    CONTAINER_TAG: nightly
+  rules:
+    - if: $KI_BUILD_TYPE == "monthly"
+
+deploy_nightly_monthly:
+  extends: .template:deploy_to_dh
+  dependencies:
+    - build_nightly_monthly
+  variables:
     CONTAINER_TAG: nightly
   rules:
     - if: $KI_BUILD_TYPE == "monthly"
@@ -73,16 +91,6 @@ build_7:
     CONTAINER_TAG: "7.0"
   rules:
     - if: $KI_BUILD_TYPE == "release"
-
-deploy_nightly:
-  extends: .template:deploy_to_dh
-  dependencies:
-    - build_nightly
-  variables:
-    CONTAINER_TAG: nightly
-  rules:
-    - if: $KI_BUILD_TYPE == "daily"
-    - if: $KI_BUILD_TYPE == "monthly"
 
 deploy_7:
   extends: .template:deploy_to_dh
