@@ -49,7 +49,7 @@ RUN set -ex; \
       -DCMAKE_INSTALL_PREFIX=/usr \
       ../../; \
     ninja; \
-    cmake --install . --prefix=/usr/local/
+    cmake --install . --prefix=/usr/installtemp/
 
 RUN set -ex; \
     cd /src/kicad-symbols; \
@@ -60,7 +60,7 @@ RUN set -ex; \
       -DCMAKE_INSTALL_PREFIX=/usr \
       . \
     ninja; \
-    cmake --install . --prefix=/usr/local/
+    cmake --install . --prefix=/usr/installtemp/
 
 RUN set -ex; \
     cd /src/kicad-footprints; \
@@ -71,7 +71,7 @@ RUN set -ex; \
       -DCMAKE_INSTALL_PREFIX=/usr \
       . \
     ninja; \
-    cmake --install . --prefix=/usr/local/
+    cmake --install . --prefix=/usr/installtemp/
 
 RUN set -ex; \
     cd /src/kicad-templates; \
@@ -82,7 +82,7 @@ RUN set -ex; \
       -DCMAKE_INSTALL_PREFIX=/usr \
       . \
     ninja; \
-    cmake --install . --prefix=/usr/local/
+    cmake --install . --prefix=/usr/installtemp/
     
 FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
@@ -116,9 +116,10 @@ RUN apt-get update && \
     sudo
 
 
-COPY --from=build /usr/local/bin /usr/bin
-COPY --from=build /usr/local/share /usr/share
-COPY --from=build /usr/local/lib /usr/lib
+COPY --from=build /usr/installtemp/bin /usr/bin
+COPY --from=build /usr/installtemp/share /usr/share
+COPY --from=build /usr/installtemp/lib /usr/lib
+COPY --from=build /usr/installtemp/local /usr/local
 
 # fix the linkage to libkicad_3dsg
 RUN ldconfig -l /usr/bin/_pcbnew.kiface
