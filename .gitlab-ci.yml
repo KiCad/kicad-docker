@@ -59,8 +59,10 @@ stages:
     - docker info
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
     - docker login -u ${DH_USER} -p ${DH_PASSWORD} docker.io
+    - docker login -u ${GH_USER} -p ${GH_TOKEN} ghcr.io
   script:
     - /bin/bash ./deploy-helper.sh -i index.docker.io/kicad/kicad
+    - /bin/bash ./deploy-helper.sh -i ghcr.io/kicad/kicad
 
 build_nightly:
   extends: .template:build
