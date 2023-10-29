@@ -60,6 +60,7 @@ RUN set -ex; \
     cd build/linux; \
     ctest --output-on-failure
 
+# Continue library installs
 RUN set -ex; \
     cd /src/kicad-symbols; \
     cmake \
@@ -145,11 +146,13 @@ RUN apt-get clean autoclean; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
 
+# Create the user
 RUN groupadd --gid $USER_GID $USER_NAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \
     && usermod -aG sudo $USER_NAME \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+# Copy over the lib tables to the user config directory
 RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
 
 RUN mv /usr/share/kicad/template/*-lib-table /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
