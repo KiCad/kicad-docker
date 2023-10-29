@@ -23,7 +23,9 @@ RUN apt-get update && \
     ninja-build \
     libgit2-dev \
     libsecret-1-dev \
-    swig4.0
+    swig4.0 \
+    python3-pip \
+    python3-venv
 
 WORKDIR /src
 
@@ -51,6 +53,13 @@ RUN set -ex; \
       ../../; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
+
+# Now test the build, shipping a broken image doesn't help us
+# Maybe we should only run the cli tests but all of them is fine for now
+RUN set -ex; \
+    pip3 install -r ./qa/tests/requirements.txt --break-system-packages; \
+    cd build/linux; \
+    ctest --output-on-failure
 
 RUN set -ex; \
     cd /src/kicad-symbols; \
