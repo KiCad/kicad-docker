@@ -162,5 +162,6 @@ RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
 RUN mv /usr/share/kicad/template/*-lib-table /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
 
 RUN chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
+RUN chown -R $USER_NAME:$USER_NAME /tmp/org.kicad.kicad || true
 
 USER $USER_NAME
