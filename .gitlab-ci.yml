@@ -98,19 +98,19 @@ deploy_nightly_monthly:
   rules:
     - if: $KI_BUILD_TYPE == "monthly"
 
-build_7:
+build_8:
   extends: .template:build_release
   variables:
-    DOCKERFILE_PATH: Dockerfile.7.0-stable
-    CONTAINER_TAG: "7.0"
+    DOCKERFILE_PATH: Dockerfile.8.0-stable
+    CONTAINER_TAG: "8.0"
   rules:
     - if: $KI_BUILD_TYPE == "release"
 
-deploy_7:
+deploy_8:
   extends: .template:deploy_to_dh
   rules:
     - if: $KI_BUILD_TYPE == "release"
   dependencies:
-    - build_7
+    - build_8
   variables:
-    CONTAINER_TAG: "7.0"
+    CONTAINER_TAG: "8.0"
