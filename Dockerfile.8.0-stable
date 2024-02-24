@@ -1,4 +1,5 @@
 FROM debian:bookworm AS build
+ARG KICAD_VERSION=8.0
 
 # install build dependencies 
 RUN apt-get update && \
@@ -30,10 +31,10 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone https://gitlab.com/kicad/code/kicad.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-templates.git;
+    git clone -b $KICAD_VERSION https://gitlab.com/kicad/code/kicad.git; \
+    git clone -b $KICAD_VERSION https://gitlab.com/kicad/libraries/kicad-symbols.git; \
+    git clone -b $KICAD_VERSION https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone -b $KICAD_VERSION https://gitlab.com/kicad/libraries/kicad-templates.git;
     
 WORKDIR /src/kicad
 
