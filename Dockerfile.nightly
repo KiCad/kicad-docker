@@ -23,6 +23,9 @@ RUN apt-get update && \
     ninja-build \
     libgit2-dev \
     libsecret-1-dev \
+    libnng-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
     swig4.0 \
     python3-pip \
     python3-venv
