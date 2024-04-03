@@ -28,7 +28,9 @@ RUN apt-get update && \
     protobuf-compiler \
     swig4.0 \
     python3-pip \
-    python3-venv
+    python3-venv \
+    libprotobuf-dev \
+    protobuf-compiler
 
 WORKDIR /src
 
@@ -53,6 +55,7 @@ RUN set -ex; \
       -DKICAD_SPICE=ON \
       -DKICAD_BUILD_I18N=ON \
       -DCMAKE_INSTALL_PREFIX=/usr \
+      -DKICAD_USE_CMAKE_FINDPROTOBUF=ON \
       ../../; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
