@@ -29,7 +29,6 @@ RUN apt-get update && \
     swig4.0 \
     python3-pip \
     python3-venv \
-    libprotobuf-dev \
     protobuf-compiler
 
 WORKDIR /src
@@ -140,6 +139,7 @@ RUN apt-get update && \
     git \
     libgit2-1.5 \
     libsecret-1-0 \
+    libprotobuf-dev \
     sudo
 
 
