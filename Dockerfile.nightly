@@ -139,7 +139,7 @@ RUN apt-get update && \
     git \
     libgit2-1.5 \
     libsecret-1-0 \
-    libprotobuf-dev \
+    libprotobuf32 \
     sudo
 
 
