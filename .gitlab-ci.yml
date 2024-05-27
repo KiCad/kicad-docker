@@ -48,7 +48,7 @@ stages:
   script:
     - docker context create builder
     - docker buildx create builder --use
-    - docker buildx build --platform linux/$ARCH --pull --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - docker buildx build --platform linux/$ARCH --pull --load --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
