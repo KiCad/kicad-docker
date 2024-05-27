@@ -1,0 +1,3 @@
+# Scripts
+*.sh    text eol=lf
+*.bat   text eol=crlf
