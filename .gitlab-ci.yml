@@ -52,7 +52,7 @@ stages:
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
   artifacts:
     paths:
       - $ARCH-docker_tags.txt
