@@ -14,11 +14,11 @@ stages:
   - deploy
 
 .template:build_base:
-  image: docker:stable
   tags:
     - kicad-dind
+  image: docker:24.0.9
   services:
-    - docker:dind
+    - docker:24.0.9-dind
   stage: build
   variables:
     GL_CONTAINER: "${GL_CONTAINER_ROOT}/${CONTAINER_NAME}"
@@ -42,9 +42,9 @@ stages:
 
 .template:build_arch:
   extends: .template:build_base
-  image: docker:24.0.5
+  image: docker:24.0.9
   services:
-    - docker:24.0.5-dind
+    - docker:24.0.9-dind
   script:
     - docker context create builder
     - docker buildx create builder --use
