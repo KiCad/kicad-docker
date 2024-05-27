@@ -25,10 +25,8 @@ stages:
     - apk add --no-cache bash
     - docker info
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-  artifacts:
-    paths:
-      - docker_tags.txt
-    
+
+
 .template:build:
   extends: .template:build_base
   script:
@@ -37,7 +35,22 @@ stages:
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
     - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
-    
+  artifacts:
+    paths:
+      - docker_tags.txt
+
+.template:build_arch:
+  extends: .template:build_base
+  script:
+    - docker buildx build --platform linux/$ARCH --pull --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - echo $KI_BUILD_TYPE
+    - echo $CONTAINER_TAG
+    - echo $GL_CONTAINER
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
+  artifacts:
+    paths:
+      - $ARCH-docker_tags.txt
+
 .template:build_release:
   extends: .template:build_base
   script:
@@ -46,6 +59,9 @@ stages:
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
     - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r $VERSION -i $GL_CONTAINER -p
+  artifacts:
+    paths:
+      - docker_tags.txt
 
 .template:deploy_to_dh:
   image: docker:stable
@@ -64,23 +80,51 @@ stages:
     - /bin/bash ./deploy-helper.sh -i index.docker.io/kicad/kicad
     - /bin/bash ./deploy-helper.sh -i ghcr.io/kicad/kicad
 
-build_nightly:
-  extends: .template:build
+.template:deploy_multi:
+  image: docker:stable
+  tags:
+    - kicad-dind
+  services:
+    - docker:dind
+  stage: deploy
+  before_script:
+    - apk add --no-cache bash
+    - docker info
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+    - echo "$DH_PASSWORD" | docker login -u "$DH_USER" docker.io --password-stdin
+    - echo "$GH_TOKEN" | docker login -u "$GH_USER" ghcr.io --password-stdin
+  script:
+    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -a arm64 -a amd64 -p
+    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -a arm64 -a amd64 -p
+
+build_nightly_amd64:
+  extends: .template:build_arch
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
     CONTAINER_TAG: nightly
+    ARCH: amd64
+  rules:
+    - if: $KI_BUILD_TYPE == "daily"
+
+build_nightly_arm64:
+  extends: .template:build_arch
+  variables:
+    DOCKERFILE_PATH: Dockerfile.nightly
+    CONTAINER_TAG: nightly
+    ARCH: arm64
   rules:
     - if: $KI_BUILD_TYPE == "daily"
 
 deploy_nightly:
-  extends: .template:deploy_to_dh
+  extends: .template:deploy_multi
   dependencies:
-    - build_nightly
+    - build_nightly_amd64
+    - build_nightly_arm64
   variables:
     CONTAINER_TAG: nightly
   rules:
     - if: $KI_BUILD_TYPE == "daily"
-  
+
 build_nightly_monthly:
   extends: .template:build
   variables:
