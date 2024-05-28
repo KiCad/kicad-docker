@@ -114,6 +114,8 @@ build_nightly_amd64:
 
 build_nightly_arm64:
   extends: .template:build_arch
+  tags:
+    - saas-linux-medium-arm64
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
     CONTAINER_TAG: nightly
