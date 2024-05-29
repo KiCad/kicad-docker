@@ -41,7 +41,7 @@ for arch in "${ARCHES[@]}"; do
         else
             echo "Pulling: $GLIMAGE"
             echo "Tagging: $GLIMAGE to: $NEW_IMAGE"
-            #echo "Pushing: $NEW_IMAGE"
+            echo "Pushing: $NEW_IMAGE"
         fi
 
         MANIFEST_SOURCES+="$NEW_IMAGE "

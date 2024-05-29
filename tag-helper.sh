@@ -108,7 +108,7 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
     CONTAINER_TAG="${TAG_BASE_NAME}"
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
     if [ "$ARCH" ]; then
-        CONTAINER_TAG="${ARCH}-${TAG_BASE_NAME}"
+        CONTAINER_TAG="${TAG_BASE_NAME}-${ARCH}"
     fi
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
