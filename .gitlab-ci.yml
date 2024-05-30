@@ -49,7 +49,7 @@ stages:
     - docker context create builder
     - docker buildx create builder --use
     - docker buildx build --platform linux/$ARCH --pull --load --provenance=false --sbom=false --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
-    - docker buildx build --platform linux/$ARCH --pull --load --provenance=false --sbom=false --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
+    #- docker buildx build --platform linux/$ARCH --pull --load --provenance=false --sbom=false --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
