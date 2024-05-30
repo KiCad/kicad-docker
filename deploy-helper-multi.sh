@@ -37,7 +37,7 @@ for arch in "${ARCHES[@]}"; do
         if [ "$REAL_RUN" = true ] ; then
             docker pull $GLIMAGE
             docker tag $GLIMAGE $NEW_IMAGE
-            #docker push $NEW_IMAGE
+            docker push $NEW_IMAGE
         else
             echo "Pulling: $GLIMAGE"
             echo "Tagging: $GLIMAGE to: $NEW_IMAGE"
