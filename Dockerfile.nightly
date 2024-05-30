@@ -100,6 +100,23 @@ RUN set -ex; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
     
+# This step must be located here to layer properly
+ARG include_3d
+RUN if [ $include_3d = true ]; then \
+    set -ex; \
+    cd /src; \
+    git clone --depth=1 https://gitlab.com/kicad/libraries/kicad-packages3D.git; \
+    cd /src/kicad-packages3D; \
+    cmake \
+      -G Ninja \
+      -DCMAKE_RULE_MESSAGES=OFF \
+      -DCMAKE_VERBOSE_MAKEFILE=OFF \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      . \
+    ninja; \
+    cmake --install . --prefix=/usr/installtemp/; \
+    fi
+    
 FROM debian:bookworm-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
