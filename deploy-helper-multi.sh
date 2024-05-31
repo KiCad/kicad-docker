@@ -2,11 +2,11 @@
 
 REAL_RUN=false
 
-while getopts 'i:a:p' opt
+while getopts 'i:t:p' opt
 do
     case "${opt}" in
         i) IMAGE_BASE_NAME=${OPTARG};;
-        a) ARCHES+=("$OPTARG");;
+        t) TAG_FILES+=("$OPTARG");;
         p) REAL_RUN=true;;
 
         :) usage 1 "-$OPTARG requires an argument" ;;
@@ -23,10 +23,10 @@ fi
 
 MANIFEST_SOURCES=""
 MANIFEST_IMAGE=""
-for arch in "${ARCHES[@]}"; do
+for tag_file in "${TAG_FILES[@]}"; do
     while read -r MANIFESTTAG && read -r ARCHTAG && read -r GLIMAGE
     do
-        echo "Read tag: $ARCHTAG image: $GLIMAGE Arch:$arch"
+        echo "Read tag: $ARCHTAG image: $GLIMAGE"
 
         NEW_IMAGE="$IMAGE_BASE_NAME:$ARCHTAG"
         if [[ -z "$MANIFEST_IMAGE" ]]; then
@@ -45,7 +45,7 @@ for arch in "${ARCHES[@]}"; do
         fi
 
         MANIFEST_SOURCES+="$NEW_IMAGE "
-    done < "$arch-docker_tags.txt"
+    done < "$tag_file"
 
     if [ "$REAL_RUN" = true ] ; then
         docker buildx imagetools create -t ${MANIFEST_IMAGE} ${MANIFEST_SOURCES}

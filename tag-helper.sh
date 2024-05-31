@@ -5,7 +5,7 @@ unset -v TAG_BASE_NAME
 
 PUSH_IMAGE=false
 
-while getopts 'a:c:t:b:r:i:p' opt
+while getopts 'o:a:c:t:b:r:i:p' opt
 do
     case "${opt}" in
         c) ORIG_CONTAINER=${OPTARG};;
@@ -15,6 +15,7 @@ do
         i) IMAGE_BASE_NAME=${OPTARG};;
         p) PUSH_IMAGE=true;;
         a) ARCH=${OPTARG};;
+        o) TAGS_FILENAME=${OPTARG};;
 
         :) usage 1 "-$OPTARG requires an argument" ;;
         ?) usage 1 "Unknown option '$opt'" ;;
@@ -38,6 +39,10 @@ if [[ -z "$IMAGE_BASE_NAME" ]]; then
     exit;
 fi
 
+if [[ -z "$TAGS_FILENAME" ]]; then
+    TAGS_FILENAME="docker_tags.txt"
+fi
+
 #
 # BUILD_TYPE
 # 'monthly' - will append the current YYYYMM to the container base name
@@ -47,7 +52,7 @@ fi
 # BUILD_TAG - required for release
 #
 
-> docker_tags.txt
+> "${TAGS_FILENAME}"
 # Check if the KI_BUILD_TYPE variable is "monthly"
 if [[ "$BUILD_TYPE" == "monthly" ]]; then
     if [[ -z "$TAG_BASE_NAME" ]]; then
@@ -62,8 +67,8 @@ if [[ "$BUILD_TYPE" == "monthly" ]]; then
     CONTAINER_TAG="${TAG_BASE_NAME}-${MONTH_YEAR_STRING}"
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
 
-    echo $CONTAINER_TAG >> docker_tags.txt
-    echo $CONTAINER_IMAGE >> docker_tags.txt
+    echo $CONTAINER_TAG >> "${TAGS_FILENAME}"
+    echo $CONTAINER_IMAGE >> "${TAGS_FILENAME}"
 
     if [ "$PUSH_IMAGE" = true ] ; then
         docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
@@ -82,8 +87,8 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     # Print the month and year string
     CONTAINER_TAG="${MAJOR_MINOR_VERSION}"
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
-    echo $CONTAINER_TAG >> docker_tags.txt
-    echo $CONTAINER_IMAGE >> docker_tags.txt
+    echo $CONTAINER_TAG >> "${TAGS_FILENAME}"
+    echo $CONTAINER_IMAGE >> "${TAGS_FILENAME}"
 
     if [ "$PUSH_IMAGE" = true ] ; then
         docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
@@ -92,8 +97,8 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
 
     CONTAINER_TAG="${FULL_VERSION}"
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
-    echo $CONTAINER_TAG >> docker_tags.txt
-    echo $CONTAINER_IMAGE >> docker_tags.txt
+    echo $CONTAINER_TAG >> "${TAGS_FILENAME}"
+    echo $CONTAINER_IMAGE >> "${TAGS_FILENAME}"
 
     if [ "$PUSH_IMAGE" = true ] ; then
         docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
@@ -113,11 +118,6 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
 
-    TAGS_FILENAME="docker_tags.txt"
-    if [ $ARCH ]; then
-        TAGS_FILENAME="$ARCH-docker_tags.txt"
-    fi
-
     if [ "$ARCH" ]; then
         echo $CONTAINER_TAG_ORIG >> "${TAGS_FILENAME}"
     fi
@@ -133,5 +133,5 @@ fi
 if [ "$PUSH_IMAGE" = true ] ; then
     echo "Tagged and pushed images"
 else
-    echo "Dry-run, saved docker_tags.txt"
+    echo "Dry-run, saved ${TAGS_FILENAME}"
 fi

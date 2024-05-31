@@ -46,18 +46,17 @@ stages:
   services:
     - docker:24.0.9-dind
   script:
-    - docker context create builder
-    - docker buildx create builder --use
-    - docker buildx build --platform linux/$ARCH --pull --load --provenance=false --sbom=false --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
-    #- docker buildx build --platform linux/$ARCH --pull --load --provenance=false --sbom=false --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
+    - docker build --pull --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
-    #- /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $KI_BUILD_TYPE -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -p
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $KI_BUILD_TYPE -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
   artifacts:
     paths:
       - $ARCH-docker_tags.txt
+      - $ARCH-full-docker_tags.txt
 
 .template:build_release:
   extends: .template:build_base
@@ -102,8 +101,10 @@ stages:
     - echo "$DH_PASSWORD" | docker login -u "$DH_USER" docker.io --password-stdin
     - echo "$GH_TOKEN" | docker login -u "$GH_USER" ghcr.io --password-stdin
   script:
-    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -a arm64 -a amd64 -p
-    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -a arm64 -a amd64 -p
+    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-docker_tags.txt -t amd64-docker_tags.txt -p
+    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-docker_tags.txt -t amd64-docker_tags.txt -p
+    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
+    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
 
 build_nightly_amd64:
   extends: .template:build_arch
