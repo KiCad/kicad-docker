@@ -29,7 +29,8 @@ RUN apt-get update && \
     swig4.0 \
     python3-pip \
     python3-venv \
-    protobuf-compiler
+    protobuf-compiler \
+    libzstd-dev
 
 WORKDIR /src
 
@@ -157,6 +158,7 @@ RUN apt-get update && \
     libgit2-1.5 \
     libsecret-1-0 \
     libprotobuf32 \
+    libzstd1 \
     sudo
 
 
