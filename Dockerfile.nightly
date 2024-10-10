@@ -1,5 +1,6 @@
 FROM debian:bookworm AS build
 
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
 # install build dependencies 
 RUN apt-get update && \
     apt-get install -y build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
@@ -131,6 +132,7 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
       org.opencontainers.image.licenses='GPL-3.0-or-later' \
       org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
 
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" >> /etc/apt/sources.list'
 # install runtime dependencies 
 RUN apt-get update && \
     apt-get install -y libbz2-1.0 \
@@ -145,12 +147,12 @@ RUN apt-get update && \
     libcurl4 \
     libngspice0 \
     ngspice \
-    libocct-modeling-algorithms-7.6 \
-    libocct-modeling-data-7.6 \
-    libocct-data-exchange-7.6 \
-    libocct-visualization-7.6 \
-    libocct-foundation-7.6 \
-    libocct-ocaf-7.6 \
+    libocct-modeling-algorithms-7.8 \
+    libocct-modeling-data-7.8 \
+    libocct-data-exchange-7.8 \
+    libocct-visualization-7.8 \
+    libocct-foundation-7.8 \
+    libocct-ocaf-7.8 \
     unixodbc \
     zlib1g \
     shared-mime-info \
