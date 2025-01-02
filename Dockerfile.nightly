@@ -161,6 +161,7 @@ RUN apt-get update && \
     libsecret-1-0 \
     libprotobuf32 \
     libzstd1 \
+    libnng1 \
     sudo
 
 
