@@ -168,6 +168,7 @@ RUN apt-get update && \
 COPY --from=build /usr/installtemp/bin /usr/bin
 COPY --from=build /usr/installtemp/share /usr/share
 COPY --from=build /usr/installtemp/lib /usr/lib
+COPY --from=build /usr/share/kicad /usr/share/kicad
 
 # fix the linkage to libkicad_3dsg
 RUN ldconfig -l /usr/bin/_pcbnew.kiface
