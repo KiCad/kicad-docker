@@ -159,13 +159,44 @@ build_8:
     DOCKERFILE_PATH: Dockerfile.8.0-stable
     CONTAINER_TAG: "8.0"
   rules:
-    - if: $KI_BUILD_TYPE == "release"
+    - if: $KI_BUILD_TYPE == "release8"
 
 deploy_8:
   extends: .template:deploy_to_dh
   rules:
-    - if: $KI_BUILD_TYPE == "release"
+    - if: $KI_BUILD_TYPE == "release8"
   dependencies:
     - build_8
   variables:
     CONTAINER_TAG: "8.0"
+    
+    
+build_9_amd64:
+  extends: .template:build_arch
+  variables:
+    DOCKERFILE_PATH: Dockerfile.9.0-stable
+    CONTAINER_TAG: "9.0"
+    ARCH: amd64
+  rules:
+    - if: $KI_BUILD_TYPE == "release9"
+
+build_9_arm64:
+  extends: .template:build_arch
+  tags:
+    - saas-linux-medium-arm64
+  variables:
+    DOCKERFILE_PATH: Dockerfile.9.0-stable
+    CONTAINER_TAG: "9.0"
+    ARCH: arm64
+  rules:
+    - if: $KI_BUILD_TYPE == "release9"
+
+deploy_9:
+  extends: .template:deploy_multi
+  dependencies:
+    - build_9_amd64
+    - build_9_arm64
+  variables:
+    CONTAINER_TAG: "9.0"
+  rules:
+    - if: $KI_BUILD_TYPE == "release9"
