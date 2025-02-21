@@ -74,7 +74,7 @@ if [[ "$BUILD_TYPE" == "monthly" ]]; then
         docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
         docker push $CONTAINER_IMAGE
     fi
-elif [[ "$BUILD_TYPE" == "release" ]]; then
+elif [[ "$BUILD_TYPE" == release* ]]; then
     if [[ $RELEASE_TAG =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]];
     then
         FULL_VERSION=${BASH_REMATCH[0]}
