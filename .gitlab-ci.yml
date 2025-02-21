@@ -28,7 +28,7 @@ stages:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
 
 
-.template:build:
+.template:build_legacy:
   extends: .template:build_base
   script:
     - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
@@ -58,7 +58,25 @@ stages:
       - $ARCH-docker_tags.txt
       - $ARCH-full-docker_tags.txt
 
-.template:build_release:
+.template:build_arch_release:
+  extends: .template:build_base
+  image: docker:24.0.9
+  services:
+    - docker:24.0.9-dind
+  script:
+    - docker build --pull --build-arg="KICAD_VERSION=${VERSION} --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="KICAD_VERSION=${VERSION} --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
+    - echo $KI_BUILD_TYPE
+    - echo $CONTAINER_TAG
+    - echo $GL_CONTAINER
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $KI_BUILD_TYPE -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
+  artifacts:
+    paths:
+      - $ARCH-docker_tags.txt
+      - $ARCH-full-docker_tags.txt
+
+.template:build_release_legacy:
   extends: .template:build_base
   script:
     - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} --build-arg="KICAD_VERSION=${VERSION}" .
@@ -137,7 +155,7 @@ deploy_nightly:
     - if: $KI_BUILD_TYPE == "daily"
 
 build_nightly_monthly:
-  extends: .template:build
+  extends: .template:build_legacy
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
     CONTAINER_TAG: nightly
@@ -154,7 +172,7 @@ deploy_nightly_monthly:
     - if: $KI_BUILD_TYPE == "monthly"
 
 build_8:
-  extends: .template:build_release
+  extends: .template:build_release_legacy
   variables:
     DOCKERFILE_PATH: Dockerfile.8.0-stable
     CONTAINER_TAG: "8.0"
@@ -169,10 +187,10 @@ deploy_8:
     - build_8
   variables:
     CONTAINER_TAG: "8.0"
-    
-    
+
+
 build_9_amd64:
-  extends: .template:build_arch
+  extends: .template:build_arch_release
   variables:
     DOCKERFILE_PATH: Dockerfile.9.0-stable
     CONTAINER_TAG: "9.0"
@@ -181,7 +199,7 @@ build_9_amd64:
     - if: $KI_BUILD_TYPE == "release9"
 
 build_9_arm64:
-  extends: .template:build_arch
+  extends: .template:build_arch_release
   tags:
     - saas-linux-medium-arm64
   variables:
