@@ -64,8 +64,8 @@ stages:
   services:
     - docker:24.0.9-dind
   script:
-    - docker build --pull --build-arg="KICAD_VERSION=${VERSION} --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
-    - docker build --pull --build-arg="KICAD_VERSION=${VERSION} --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="KICAD_VERSION=${VERSION}" --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="KICAD_VERSION=${VERSION}" --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
     - echo $KI_BUILD_TYPE
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
