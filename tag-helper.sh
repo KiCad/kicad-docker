@@ -84,9 +84,19 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
         exit;
     fi
 
-    # Print the month and year string
+    # Major minor tag
     CONTAINER_TAG="${MAJOR_MINOR_VERSION}"
+    CONTAINER_TAG_ORIG=$CONTAINER_TAG
+    if [ "$ARCH" ]; then
+        CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
+    fi
+
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
+
+    # now dump to file
+    if [ "$ARCH" ]; then
+        echo $CONTAINER_TAG_ORIG >> "${TAGS_FILENAME}"
+    fi
     echo $CONTAINER_TAG >> "${TAGS_FILENAME}"
     echo $CONTAINER_IMAGE >> "${TAGS_FILENAME}"
 
@@ -95,8 +105,20 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
         docker push $CONTAINER_IMAGE
     fi
 
+    # Full version tag
+
     CONTAINER_TAG="${FULL_VERSION}"
+    CONTAINER_TAG_ORIG=$CONTAINER_TAG
+    if [ "$ARCH" ]; then
+        CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
+    fi
+
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
+
+    # now dump to file
+    if [ "$ARCH" ]; then
+        echo $CONTAINER_TAG_ORIG >> "${TAGS_FILENAME}"
+    fi
     echo $CONTAINER_TAG >> "${TAGS_FILENAME}"
     echo $CONTAINER_IMAGE >> "${TAGS_FILENAME}"
 
@@ -113,7 +135,7 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
     CONTAINER_TAG="${TAG_BASE_NAME}"
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
     if [ "$ARCH" ]; then
-        CONTAINER_TAG="${TAG_BASE_NAME}-${ARCH}"
+        CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
     fi
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
