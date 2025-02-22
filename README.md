@@ -4,6 +4,25 @@ This docker image is intended primarily for being able to use kicad-cli in CI ap
 
 These docker images are currently based on Debian bookworm.
 
+## Version Tags & Architectures
+
+|Tag	 | Description |
+|--------| ------- |
+|nightly | Build of latest master branch each night |
+|nightly-full| nightly + includes 3d symbols|
+|nightly-YYYYMM | Master branch built during the given YYYY-MM |
+|9.0   	 | Always the latest stable 9.0 release |
+|9.0.x   | 9.0.x specific release |
+|8.0   	 | Always the latest stable 8.0 release |
+|8.0.x   | 8.0.x specific release |
+
+amd64 images are available by default for tags.
+
+arm64 is available with the nightly tag and 9.0+ tags.
+
+It is highly recommended you do not use the arch specific tags that may be visible in the repository list and instead a tag from the table above.
+
+
 ## Tag Policy
 A new docker image will be generated for each official release.
 
