@@ -4,6 +4,13 @@
 #   monthly
 #   release
 
+spec:
+  inputs:
+    build_type:
+      options: ['daily', 'monthly', 'release9', 'release8']
+      default: daily
+---
+
 variables:
   CONTAINER_NAME: kicad
   GL_CONTAINER_ROOT: ${CI_REGISTRY}/${CI_PROJECT_PATH}
@@ -131,7 +138,7 @@ build_nightly_amd64:
     CONTAINER_TAG: nightly
     ARCH: amd64
   rules:
-    - if: $KI_BUILD_TYPE == "daily"
+    - if: '"$[[ inputs.build_type ]]" == "daily"'
 
 build_nightly_arm64:
   extends: .template:build_arch
@@ -142,7 +149,7 @@ build_nightly_arm64:
     CONTAINER_TAG: nightly
     ARCH: arm64
   rules:
-    - if: $KI_BUILD_TYPE == "daily"
+    - if: '"$[[ inputs.build_type ]]" == "daily"'
 
 deploy_nightly:
   extends: .template:deploy_multi
@@ -152,7 +159,7 @@ deploy_nightly:
   variables:
     CONTAINER_TAG: nightly
   rules:
-    - if: $KI_BUILD_TYPE == "daily"
+    - if: '"$[[ inputs.build_type ]]" == "daily"'
 
 build_nightly_monthly:
   extends: .template:build_legacy
@@ -160,7 +167,7 @@ build_nightly_monthly:
     DOCKERFILE_PATH: Dockerfile.nightly
     CONTAINER_TAG: nightly
   rules:
-    - if: $KI_BUILD_TYPE == "monthly"
+    - if: '"$[[ inputs.build_type ]]" == "monthly"'
 
 deploy_nightly_monthly:
   extends: .template:deploy_to_dh
@@ -169,7 +176,7 @@ deploy_nightly_monthly:
   variables:
     CONTAINER_TAG: nightly
   rules:
-    - if: $KI_BUILD_TYPE == "monthly"
+    - if: '"$[[ inputs.build_type ]]" == "monthly"'
 
 build_8:
   extends: .template:build_release_legacy
@@ -177,12 +184,12 @@ build_8:
     DOCKERFILE_PATH: Dockerfile.8.0-stable
     CONTAINER_TAG: "8.0"
   rules:
-    - if: $KI_BUILD_TYPE == "release8"
+    - if: '"$[[ inputs.build_type ]]" == "release8"'
 
 deploy_8:
   extends: .template:deploy_to_dh
   rules:
-    - if: $KI_BUILD_TYPE == "release8"
+    - if: '"$[[ inputs.build_type ]]" == "release8"'
   dependencies:
     - build_8
   variables:
@@ -196,7 +203,7 @@ build_9_amd64:
     CONTAINER_TAG: "9.0"
     ARCH: amd64
   rules:
-    - if: $KI_BUILD_TYPE == "release9"
+    - if: '"$[[ inputs.build_type ]]" == "release9"'
 
 build_9_arm64:
   extends: .template:build_arch_release
@@ -207,7 +214,7 @@ build_9_arm64:
     CONTAINER_TAG: "9.0"
     ARCH: arm64
   rules:
-    - if: $KI_BUILD_TYPE == "release9"
+    - if: '"$[[ inputs.build_type ]]" == "release9"'
 
 deploy_9:
   extends: .template:deploy_multi
@@ -217,4 +224,4 @@ deploy_9:
   variables:
     CONTAINER_TAG: "9.0"
   rules:
-    - if: $KI_BUILD_TYPE == "release9"
+    - if: '"$[[ inputs.build_type ]]" == "release9"'
