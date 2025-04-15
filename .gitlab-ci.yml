@@ -7,8 +7,12 @@
 spec:
   inputs:
     build_type:
+      description: "Affects the image handling based on mode"
       options: ['daily', 'monthly', 'release9', 'release8']
       default: daily
+    build_version:
+      description: "KiCad version to build, only used for release builds, this should be the release tag"
+      default:
 ---
 
 variables:
@@ -39,10 +43,10 @@ stages:
   extends: .template:build_base
   script:
     - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
-    - echo $KI_BUILD_TYPE
+    - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p
+    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -i $GL_CONTAINER -p
   artifacts:
     paths:
       - docker_tags.txt
@@ -55,11 +59,11 @@ stages:
   script:
     - docker build --pull --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
     - docker build --pull --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
-    - echo $KI_BUILD_TYPE
+    - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $KI_BUILD_TYPE -b $CONTAINER_TAG -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $KI_BUILD_TYPE -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $[[ inputs.build_type ]] -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
   artifacts:
     paths:
       - $ARCH-docker_tags.txt
@@ -73,11 +77,11 @@ stages:
   script:
     - docker build --pull --build-arg="KICAD_VERSION=${VERSION}" --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
     - docker build --pull --build-arg="KICAD_VERSION=${VERSION}" --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
-    - echo $KI_BUILD_TYPE
+    - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r $VERSION -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $KI_BUILD_TYPE -b ${CONTAINER_TAG}-full -r $VERSION -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $[[ inputs.build_type ]] -b ${CONTAINER_TAG}-full -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
   artifacts:
     paths:
       - $ARCH-docker_tags.txt
@@ -86,11 +90,11 @@ stages:
 .template:build_release_legacy:
   extends: .template:build_base
   script:
-    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} --build-arg="KICAD_VERSION=${VERSION}" .
-    - echo $KI_BUILD_TYPE
+    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" .
+    - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $KI_BUILD_TYPE -b $CONTAINER_TAG -r $VERSION -i $GL_CONTAINER -p
+    - /bin/bash ./tag-helper.sh -c kicad:build-temp -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p
   artifacts:
     paths:
       - docker_tags.txt
