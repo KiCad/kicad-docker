@@ -132,8 +132,8 @@ stages:
   script:
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-docker_tags.txt -t amd64-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-docker_tags.txt -t amd64-docker_tags.txt -p
-    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
-    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
+#    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
+#    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
 
 build_nightly_amd64:
   extends: .template:build_arch
@@ -144,16 +144,16 @@ build_nightly_amd64:
   rules:
     - if: '"$[[ inputs.build_type ]]" == "daily"'
 
-build_nightly_arm64:
-  extends: .template:build_arch
-  tags:
-    - saas-linux-medium-arm64
-  variables:
-    DOCKERFILE_PATH: Dockerfile.nightly
-    CONTAINER_TAG: nightly
-    ARCH: arm64
-  rules:
-    - if: '"$[[ inputs.build_type ]]" == "daily"'
+#build_nightly_arm64:
+#  extends: .template:build_arch
+#  tags:
+#    - saas-linux-medium-arm64
+#  variables:
+#    DOCKERFILE_PATH: Dockerfile.nightly
+#    CONTAINER_TAG: nightly
+#    ARCH: arm64
+#  rules:
+#    - if: '"$[[ inputs.build_type ]]" == "daily"'
 
 deploy_nightly:
   extends: .template:deploy_multi
@@ -209,16 +209,16 @@ build_9_amd64:
   rules:
     - if: '"$[[ inputs.build_type ]]" == "release9"'
 
-build_9_arm64:
-  extends: .template:build_arch_release
-  tags:
-    - saas-linux-medium-arm64
-  variables:
-    DOCKERFILE_PATH: Dockerfile.9.0-stable
-    CONTAINER_TAG: "9.0"
-    ARCH: arm64
-  rules:
-    - if: '"$[[ inputs.build_type ]]" == "release9"'
+#build_9_arm64:
+#  extends: .template:build_arch_release
+#  tags:
+#    - saas-linux-medium-arm64
+#  variables:
+#    DOCKERFILE_PATH: Dockerfile.9.0-stable
+#    CONTAINER_TAG: "9.0"
+#    ARCH: arm64
+#  rules:
+#    - if: '"$[[ inputs.build_type ]]" == "release9"'
 
 deploy_9:
   extends: .template:deploy_multi
