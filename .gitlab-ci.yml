@@ -224,7 +224,7 @@ deploy_9:
   extends: .template:deploy_multi
   dependencies:
     - build_9_amd64
-    - build_9_arm64
+#    - build_9_arm64
   variables:
     CONTAINER_TAG: "9.0"
   rules:
