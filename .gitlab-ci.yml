@@ -130,10 +130,10 @@ stages:
     - echo "$DH_PASSWORD" | docker login -u "$DH_USER" docker.io --password-stdin
     - echo "$GH_TOKEN" | docker login -u "$GH_USER" ghcr.io --password-stdin
   script:
- #   - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-docker_tags.txt -t arm64-docker_tags.txt -p
- #   - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-docker_tags.txt -t arm64-docker_tags.txt -p
-    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
-    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
+ #   - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-docker_tags.txt -t arm64-full-docker_tags.txt -p
+ #   - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-docker_tags.txt -t arm64-full-docker_tags.txt -p
+    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-docker_tags.txt -t amd64-full-docker_tags.txt -p
+    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-docker_tags.txt -t amd64-full-docker_tags.txt -p
 
 build_nightly_amd64:
   extends: .template:build_arch
