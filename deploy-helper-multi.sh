@@ -47,9 +47,14 @@ for tag_file in "${TAG_FILES[@]}"; do
         MANIFEST_SOURCES+="$NEW_IMAGE "
     done < "$tag_file"
 
+    echo "Creating manifest: ${MANIFEST_IMAGE} from ${MANIFEST_SOURCES}"
     if [ "$REAL_RUN" = true ] ; then
         docker buildx imagetools create -t ${MANIFEST_IMAGE} ${MANIFEST_SOURCES}
-    else
-        echo "Creating manifest: ${MANIFEST_IMAGE} from ${MANIFEST_SOURCES}"
+        
+        exitcode=$?
+        if [ $exitcode -ne 0 ]; then
+            echo "Error manifesting"
+            exit $exitcode
+        fi
     fi
 done
