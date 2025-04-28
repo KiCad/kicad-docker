@@ -65,7 +65,7 @@ for tag_file in "${TAG_FILES[@]}"; do
         NEW_IMAGE="$IMAGE_BASE_NAME:$ARCHTAG"
         TARGET_MANIFEST_IMAGE="$IMAGE_BASE_NAME:$MANIFESTTAG"
 
-        echo "Creating tagged image: $NEW_IMAGE"
+        echo "Preparing tagged image: $NEW_IMAGE for manifest: $TARGET_MANIFEST_IMAGE"
         if [ "$REAL_RUN" = true ] ; then
             echo "Pulling: $GLIMAGE"
             docker pull $GLIMAGE
@@ -75,6 +75,8 @@ for tag_file in "${TAG_FILES[@]}"; do
 
             echo "Pushing: $NEW_IMAGE"
             docker push $NEW_IMAGE
+
+            MANIFESTS_MAP["$TARGET_MANIFEST_IMAGE"]+="$NEW_IMAGE "
         else
             echo "Pulling: $GLIMAGE"
             echo "Tagging: $GLIMAGE to: $NEW_IMAGE"
