@@ -135,7 +135,7 @@ stages:
 #    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
 #    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p    
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-docker_tags.txt -p
-    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad-t amd64-docker_tags.txt -p
+    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-full-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-full-docker_tags.txt -p
 
