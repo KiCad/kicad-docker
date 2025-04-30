@@ -4,8 +4,9 @@ unset -v BUILD_TYPE
 unset -v TAG_BASE_NAME
 
 PUSH_IMAGE=false
+FULL_IMAGE=true
 
-while getopts 'o:a:c:t:b:r:i:p' opt
+while getopts 'o:a:c:t:b:r:i:p:f' opt
 do
     case "${opt}" in
         c) ORIG_CONTAINER=${OPTARG};;
@@ -16,6 +17,7 @@ do
         p) PUSH_IMAGE=true;;
         a) ARCH=${OPTARG};;
         o) TAGS_FILENAME=${OPTARG};;
+        f) FULL_IMAGE=true;;
 
         :) usage 1 "-$OPTARG requires an argument" ;;
         ?) usage 1 "Unknown option '$opt'" ;;
@@ -84,8 +86,14 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
         exit;
     fi
 
+    #########
     # Major minor tag
+    #########
     CONTAINER_TAG="${MAJOR_MINOR_VERSION}"
+    if [ "$FULL_IMAGE" = true ] ; then
+        $CONTAINER_TAG+="-full"
+    fi
+
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
     if [ "$ARCH" ]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
@@ -105,9 +113,14 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
         docker push $CONTAINER_IMAGE
     fi
 
+    #########
     # Full version tag
+    #########
 
     CONTAINER_TAG="${FULL_VERSION}"
+    if [ "$FULL_IMAGE" = true ] ; then
+        $CONTAINER_TAG+="-full"
+    fi
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
     if [ "$ARCH" ]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"

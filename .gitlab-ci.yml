@@ -80,8 +80,8 @@ stages:
     - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $[[ inputs.build_type ]] -b ${CONTAINER_TAG}-full -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $[[ inputs.build_type ]] -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -f -a $ARCH -t $[[ inputs.build_type ]]  -r $[[ inputs.build_version ]] -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
   artifacts:
     paths:
       - $ARCH-docker_tags.txt
@@ -133,7 +133,7 @@ stages:
 #    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-docker_tags.txt -t amd64-docker_tags.txt -p
 #    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-docker_tags.txt -t amd64-docker_tags.txt -p
 #    - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
-#    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p    
+#    - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t arm64-full-docker_tags.txt -t amd64-full-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-full-docker_tags.txt -p
