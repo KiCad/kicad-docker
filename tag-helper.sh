@@ -6,7 +6,7 @@ unset -v TAG_BASE_NAME
 PUSH_IMAGE=false
 FULL_IMAGE=true
 
-while getopts 'o:a:c:t:b:r:i:p:f' opt
+while getopts 'o:a:c:t:b:r:i:pf' opt
 do
     case "${opt}" in
         c) ORIG_CONTAINER=${OPTARG};;
