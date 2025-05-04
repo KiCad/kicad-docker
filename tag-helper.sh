@@ -167,6 +167,7 @@ fi
 
 if [ "$PUSH_IMAGE" = true ] ; then
     echo "Tagged and pushed images"
+    echo "Wrote tags to ${TAGS_FILENAME}"
 else
     echo "Dry-run, saved ${TAGS_FILENAME}"
 fi
