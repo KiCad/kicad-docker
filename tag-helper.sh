@@ -4,7 +4,7 @@ unset -v BUILD_TYPE
 unset -v TAG_BASE_NAME
 
 PUSH_IMAGE=false
-FULL_IMAGE=true
+FULL_IMAGE=false
 
 while getopts 'o:a:c:t:b:r:i:pf' opt
 do
