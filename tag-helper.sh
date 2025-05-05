@@ -90,13 +90,18 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
     # Major minor tag
     #########
     CONTAINER_TAG="${MAJOR_MINOR_VERSION}"
-    if [ "$FULL_IMAGE" = true ] ; then
-        $CONTAINER_TAG+="-full"
-    fi
 
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
     if [ "$ARCH" ]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
+
+        if [ "$FULL_IMAGE" = true ]; then
+            CONTAINER_TAG="${CONTAINER_TAG}-full"
+        fi
+    fi
+
+    if [ "$FULL_IMAGE" = true ]; then
+        CONTAINER_TAG_ORIG="${CONTAINER_TAG_ORIG}-full"
     fi
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
@@ -108,7 +113,7 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
     echo $CONTAINER_TAG >> "${TAGS_FILENAME}"
     echo $CONTAINER_IMAGE >> "${TAGS_FILENAME}"
 
-    if [ "$PUSH_IMAGE" = true ] ; then
+    if [ "$PUSH_IMAGE" = true ]; then
         docker tag $ORIG_CONTAINER $CONTAINER_IMAGE
         docker push $CONTAINER_IMAGE
     fi
@@ -118,12 +123,17 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
     #########
 
     CONTAINER_TAG="${FULL_VERSION}"
-    if [ "$FULL_IMAGE" = true ] ; then
-        $CONTAINER_TAG+="-full"
-    fi
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
     if [ "$ARCH" ]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
+
+        if [ "$FULL_IMAGE" = true ]; then
+            CONTAINER_TAG="${CONTAINER_TAG}-full"
+        fi
+    fi
+
+    if [ "$FULL_IMAGE" = true ]; then
+        CONTAINER_TAG_ORIG="${CONTAINER_TAG_ORIG}-full"
     fi
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
