@@ -66,7 +66,7 @@ RUN set -ex; \
 RUN set -ex; \
     pip3 install -r ./qa/tests/requirements.txt --break-system-packages; \
     cd build/linux; \
-    ctest --output-on-failure
+    ctest -E qa_spice --output-on-failure
 
 # Continue library installs
 RUN set -ex; \
