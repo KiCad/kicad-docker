@@ -1,3 +1,5 @@
+name: 'Clean old images'
+
 on:
   workflow_dispatch:
   schedule:
@@ -15,4 +17,4 @@ jobs:
           image-names: "kicad"
           tag-selection: untagged
           cut-off: 1w
-          dry-run: true
+          dry-run: false
