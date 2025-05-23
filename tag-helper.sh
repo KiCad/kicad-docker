@@ -104,7 +104,7 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
 
     # append suffix but only to the final destination tag
     # the source may not have the prefix
-    if [[ -n "$CONTAINER_SUFFIX" ]]
+    if [[ -n "$CONTAINER_SUFFIX" ]]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
     fi
 
@@ -142,7 +142,7 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
     fi
 
     # append suffix but only to the final destination tag
-    if [[ -n "$CONTAINER_SUFFIX" ]]
+    if [[ -n "$CONTAINER_SUFFIX" ]]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
     fi
 
@@ -178,7 +178,7 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
     fi
 
     # append suffix
-    if [[ -n "$CONTAINER_SUFFIX" ]]
+    if [[ -n "$CONTAINER_SUFFIX" ]]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
     fi
 
