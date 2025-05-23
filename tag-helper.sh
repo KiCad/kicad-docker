@@ -5,8 +5,9 @@ unset -v TAG_BASE_NAME
 
 PUSH_IMAGE=false
 FULL_IMAGE=false
+CONTAINER_SUFFIX=""
 
-while getopts 'o:a:c:t:b:r:i:pf' opt
+while getopts 'o:a:c:t:b:r:i:pfs:' opt
 do
     case "${opt}" in
         c) ORIG_CONTAINER=${OPTARG};;
@@ -18,6 +19,7 @@ do
         a) ARCH=${OPTARG};;
         o) TAGS_FILENAME=${OPTARG};;
         f) FULL_IMAGE=true;;
+        s) CONTAINER_SUFFIX=${OPTARG};;
 
         :) usage 1 "-$OPTARG requires an argument" ;;
         ?) usage 1 "Unknown option '$opt'" ;;
@@ -100,6 +102,13 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
         fi
     fi
 
+    # append suffix but only to the final destination tag
+    # the source may not have the prefix
+    if [[ -n "$CONTAINER_SUFFIX" ]]
+        CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
+    fi
+
+    # the source is expected to have the -full bit added
     if [ "$FULL_IMAGE" = true ]; then
         CONTAINER_TAG_ORIG="${CONTAINER_TAG_ORIG}-full"
     fi
@@ -132,6 +141,12 @@ elif [[ "$BUILD_TYPE" == release* ]]; then
         fi
     fi
 
+    # append suffix but only to the final destination tag
+    if [[ -n "$CONTAINER_SUFFIX" ]]
+        CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
+    fi
+
+    # the source is expected to have the -full bit added
     if [ "$FULL_IMAGE" = true ]; then
         CONTAINER_TAG_ORIG="${CONTAINER_TAG_ORIG}-full"
     fi
@@ -157,8 +172,14 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
 
     CONTAINER_TAG="${TAG_BASE_NAME}"
     CONTAINER_TAG_ORIG=$CONTAINER_TAG
+    # append arch
     if [ "$ARCH" ]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
+    fi
+
+    # append suffix
+    if [[ -n "$CONTAINER_SUFFIX" ]]
+        CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
     fi
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"

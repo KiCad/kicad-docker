@@ -51,7 +51,7 @@ stages:
     paths:
       - docker_tags.txt
 
-.template:build_arch:
+.template:build_arch_nightly:
   extends: .template:build_base
   image: docker:24.0.9
   services:
@@ -62,8 +62,8 @@ stages:
     - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -i $GL_CONTAINER -p -o ${ARCH}-docker_tags.txt
-    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $[[ inputs.build_type ]] -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -p -o ${ARCH}-full-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp -a $ARCH -t $[[ inputs.build_type ]] -b $CONTAINER_TAG -i $GL_CONTAINER -s "$CONTAINER_SUFFIX" -p -o ${ARCH}-docker_tags.txt
+    - /bin/bash ./tag-helper.sh -c kicad:$ARCH-build-temp-full -a $ARCH -t $[[ inputs.build_type ]] -b ${CONTAINER_TAG}-full -i $GL_CONTAINER -s "$CONTAINER_SUFFIX" -p -o ${ARCH}-full-docker_tags.txt
   artifacts:
     paths:
       - $ARCH-docker_tags.txt
@@ -139,8 +139,8 @@ stages:
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-full-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-full-docker_tags.txt -p
 
-build_nightly_amd64:
-  extends: .template:build_arch
+build_nightly_amd64_bookworm:
+  extends: .template:build_arch_nightly
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly
     CONTAINER_TAG: nightly
@@ -149,7 +149,7 @@ build_nightly_amd64:
     - if: '"$[[ inputs.build_type ]]" == "daily"'
 
 #build_nightly_arm64:
-#  extends: .template:build_arch
+#  extends: .template:build_arch_nightly
 #  tags:
 #    - saas-linux-medium-arm64
 #  variables:
@@ -159,11 +159,31 @@ build_nightly_amd64:
 #  rules:
 #    - if: '"$[[ inputs.build_type ]]" == "daily"'
 
-deploy_nightly:
+build_nightly_amd64_trixie:
+  extends: .template:build_arch_nightly
+  variables:
+    DOCKERFILE_PATH: Dockerfile.nightly-trixie
+    CONTAINER_TAG: nightly
+    CONTAINER_SUFFIX: trixie
+    ARCH: amd64
+  rules:
+    - if: '"$[[ inputs.build_type ]]" == "daily"'
+
+deploy_nightly_bookworm:
   extends: .template:deploy_multi
   dependencies:
-    - build_nightly_amd64
-#    - build_nightly_arm64
+    - build_nightly_amd64_bookworm
+#    - build_nightly_arm64_bookworm
+  variables:
+    CONTAINER_TAG: nightly
+  rules:
+    - if: '"$[[ inputs.build_type ]]" == "daily"'
+    
+deploy_nightly_trixie:
+  extends: .template:deploy_multi
+  dependencies:
+    - build_nightly_amd64_trixie
+#    - build_nightly_arm64_trixie
   variables:
     CONTAINER_TAG: nightly
   rules:
