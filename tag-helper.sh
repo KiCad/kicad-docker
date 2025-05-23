@@ -177,9 +177,10 @@ elif [[ "$BUILD_TYPE" == "daily" ]]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${ARCH}"
     fi
 
-    # append suffix
+    # append suffix to the the main manifest tag and intermediate tag
     if [[ -n "$CONTAINER_SUFFIX" ]]; then
         CONTAINER_TAG="${CONTAINER_TAG}-${CONTAINER_SUFFIX}"
+        CONTAINER_TAG_ORIG="${CONTAINER_TAG_ORIG}-${CONTAINER_SUFFIX}"
     fi
 
     CONTAINER_IMAGE="$IMAGE_BASE_NAME:$CONTAINER_TAG"
