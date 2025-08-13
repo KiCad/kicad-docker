@@ -32,7 +32,8 @@ RUN apt-get update && \
     python3-pip \
     python3-venv \
     protobuf-compiler \
-    libzstd-dev
+    libzstd-dev \
+    libspnav-dev
 
 WORKDIR /src
 
@@ -165,6 +166,7 @@ RUN apt-get update && \
     libprotobuf32 \
     libzstd1 \
     libnng1 \
+    libspnav0 \
     sudo
 
 
