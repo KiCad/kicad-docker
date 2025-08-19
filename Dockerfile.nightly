@@ -34,7 +34,8 @@ RUN apt-get update && \
     python3-venv \
     protobuf-compiler \
     libzstd-dev \
-    libspnav-dev
+    libspnav-dev \
+    libpoppler-glib-dev
 
 WORKDIR /src
 
@@ -168,6 +169,7 @@ RUN apt-get update && \
     libzstd1 \
     libnng1 \
     libspnav0 \
+    libpoppler-glib8 \
     sudo
 
 
