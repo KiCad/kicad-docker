@@ -61,6 +61,7 @@ RUN set -ex; \
       -DKICAD_BUILD_I18N=ON \
       -DCMAKE_INSTALL_PREFIX=/usr \
       -DKICAD_USE_CMAKE_FINDPROTOBUF=ON \
+      -DKICAD_USE_PCH=ON \
       ../../; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
