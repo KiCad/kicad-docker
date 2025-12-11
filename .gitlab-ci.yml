@@ -139,15 +139,6 @@ stages:
     - /bin/bash ./deploy-helper-multi.sh -i index.docker.io/kicad/kicad -t amd64-full-docker_tags.txt -p
     - /bin/bash ./deploy-helper-multi.sh -i ghcr.io/kicad/kicad -t amd64-full-docker_tags.txt -p
 
-build_nightly_amd64_bookworm:
-  extends: .template:build_arch_nightly
-  variables:
-    DOCKERFILE_PATH: Dockerfile.nightly
-    CONTAINER_TAG: nightly
-    ARCH: amd64
-  rules:
-    - if: '"$[[ inputs.build_type ]]" == "daily"'
-
 #build_nightly_arm64:
 #  extends: .template:build_arch_nightly
 #  tags:
@@ -164,21 +155,10 @@ build_nightly_amd64_trixie:
   variables:
     DOCKERFILE_PATH: Dockerfile.nightly-trixie
     CONTAINER_TAG: nightly
-    CONTAINER_SUFFIX: trixie
     ARCH: amd64
   rules:
     - if: '"$[[ inputs.build_type ]]" == "daily"'
 
-deploy_nightly_bookworm:
-  extends: .template:deploy_multi
-  dependencies:
-    - build_nightly_amd64_bookworm
-#    - build_nightly_arm64_bookworm
-  variables:
-    CONTAINER_TAG: nightly
-  rules:
-    - if: '"$[[ inputs.build_type ]]" == "daily"'
-    
 deploy_nightly_trixie:
   extends: .template:deploy_multi
   dependencies:
