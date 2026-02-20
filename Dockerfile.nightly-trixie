@@ -79,7 +79,7 @@ RUN set -ex; \
       -DCMAKE_RULE_MESSAGES=OFF \
       -DCMAKE_VERBOSE_MAKEFILE=OFF \
       -DCMAKE_INSTALL_PREFIX=/usr \
-      . \
+      .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
@@ -90,7 +90,7 @@ RUN set -ex; \
       -DCMAKE_RULE_MESSAGES=OFF \
       -DCMAKE_VERBOSE_MAKEFILE=OFF \
       -DCMAKE_INSTALL_PREFIX=/usr \
-      . \
+      .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
@@ -101,7 +101,7 @@ RUN set -ex; \
       -DCMAKE_RULE_MESSAGES=OFF \
       -DCMAKE_VERBOSE_MAKEFILE=OFF \
       -DCMAKE_INSTALL_PREFIX=/usr \
-      . \
+      .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
     
@@ -117,7 +117,7 @@ RUN if [ $include_3d = true ]; then \
       -DCMAKE_RULE_MESSAGES=OFF \
       -DCMAKE_VERBOSE_MAKEFILE=OFF \
       -DCMAKE_INSTALL_PREFIX=/usr \
-      . \
+      .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/; \
     fi
