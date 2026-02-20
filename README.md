@@ -6,15 +6,16 @@ These docker images are currently based on Debian bookworm.
 
 ## Version Tags & Architectures
 
-|Tag	 | Description |
-|--------| ------- |
-|nightly | Build of latest master branch each night |
-|nightly-full| nightly + includes 3d symbols|
-|nightly-YYYYMM | Master branch built during the given YYYY-MM |
-|9.0   	 | Always the latest stable 9.0 release |
-|9.0.x   | 9.0.x specific release |
-|8.0   	 | Always the latest stable 8.0 release |
-|8.0.x   | 8.0.x specific release |
+
+|Tag	 | Description | OS |
+|--------| ------- | ------ |
+|nightly | Build of latest master branch each night | Debian 13 Trixie
+|nightly-full| nightly + includes 3d symbols| Debian 13 Trixie
+|nightly-YYYYMM | Master branch built during the given YYYY-MM | Debian 13 Trixie
+|9.0   	 | Always the latest stable 9.0 release | Debian 12 Bookworm
+|9.0.x   | 9.0.x specific release | Debian 12 Bookworm
+|8.0   	 | Always the latest stable 8.0 release | Debian 12 Bookworm
+|8.0.x   | 8.0.x specific release | Debian 12 Bookworm
 
 amd64 images are available by default for tags.
 
