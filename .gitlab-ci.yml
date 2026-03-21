@@ -8,7 +8,7 @@ spec:
   inputs:
     build_type:
       description: "Affects the image handling based on mode"
-      options: ['daily', 'monthly', 'release9', 'release8']
+      options: ['daily', 'monthly', 'release10', 'release9', 'release8']
       default: daily
     build_version:
       description: "KiCad version to build, only used for release builds, this should be the release tag"
@@ -172,7 +172,7 @@ deploy_nightly_trixie:
 build_nightly_monthly:
   extends: .template:build_legacy
   variables:
-    DOCKERFILE_PATH: Dockerfile.nightly
+    DOCKERFILE_PATH: Dockerfile.nightly-trixie
     CONTAINER_TAG: nightly
   rules:
     - if: '"$[[ inputs.build_type ]]" == "monthly"'
@@ -233,3 +233,34 @@ deploy_9:
     CONTAINER_TAG: "9.0"
   rules:
     - if: '"$[[ inputs.build_type ]]" == "release9"'
+    
+    
+build_10_amd64:
+  extends: .template:build_arch_release
+  variables:
+    DOCKERFILE_PATH: Dockerfile.10.0-stable
+    CONTAINER_TAG: "10.0"
+    ARCH: amd64
+  rules:
+    - if: '"$[[ inputs.build_type ]]" == "release10"'
+
+#build_9_arm64:
+#  extends: .template:build_arch_release
+#  tags:
+#    - saas-linux-medium-arm64
+#  variables:
+#    DOCKERFILE_PATH: Dockerfile.9.0-stable
+#    CONTAINER_TAG: "9.0"
+#    ARCH: arm64
+#  rules:
+#    - if: '"$[[ inputs.build_type ]]" == "release9"'
+
+deploy_10:
+  extends: .template:deploy_multi
+  dependencies:
+    - build_10_amd64
+#    - build_9_arm64
+  variables:
+    CONTAINER_TAG: "10.0"
+  rules:
+    - if: '"$[[ inputs.build_type ]]" == "release10"'
