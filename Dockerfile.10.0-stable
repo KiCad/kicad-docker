@@ -1,7 +1,6 @@
-FROM debian:bookworm AS build
+FROM debian:trixie AS build
 ARG KICAD_VERSION=10.0
 
-# install build dependencies 
 # install build dependencies 
 RUN apt-get update && \
     apt-get install -y build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
