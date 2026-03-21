@@ -123,7 +123,7 @@ RUN if [ $include_3d = true ]; then \
     cmake --install . --prefix=/usr/installtemp/; \
     fi
     
-FROM debian:bookworm-slim AS runtime
+FROM debian:trixie-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
