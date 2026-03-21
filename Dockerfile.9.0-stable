@@ -179,6 +179,11 @@ RUN apt-get clean autoclean; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
 
+# Setup UTF-8 locale
+ENV LANG=C.UTF-8
+ENV LANGUAGE=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
 # Setup user
 RUN groupadd --gid $USER_GID $USER_NAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \

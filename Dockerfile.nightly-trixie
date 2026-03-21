@@ -1,6 +1,6 @@
 FROM debian:trixie AS build
 
-# install build dependencies 
+# install build dependencies
 RUN apt-get update && \
     apt-get install -y build-essential cmake libbz2-dev libcairo2-dev libglu1-mesa-dev \
     libgl1-mesa-dev libglew-dev libx11-dev \
@@ -43,7 +43,7 @@ RUN set -ex;            \
     git clone https://gitlab.com/kicad/libraries/kicad-symbols.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-footprints.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-templates.git;
-    
+
 WORKDIR /src/kicad
 
 # We want the built install prefix in /usr to match normal system installed software
@@ -104,7 +104,7 @@ RUN set -ex; \
       .; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
-    
+
 # This step must be located here to layer properly
 ARG include_3d
 RUN if [ $include_3d = true ]; then \
@@ -121,7 +121,7 @@ RUN if [ $include_3d = true ]; then \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/; \
     fi
-    
+
 FROM debian:trixie-slim AS runtime
 ARG USER_NAME=kicad
 ARG USER_UID=1000
@@ -135,19 +135,19 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
       org.opencontainers.image.licenses='GPL-3.0-or-later' \
       org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
 
-# install runtime dependencies 
+# install runtime dependencies
 RUN apt-get update && \
     apt-get install -y libbz2-1.0 \
     libcairo2 \
     libglu1-mesa \
-    libglew2.2 \ 
+    libglew2.2 \
     libx11-6 \
     libwxgtk3.2-1 \
     libwxgtk-webview3.2-1 \
     libpython3.13 \
-    python3 \ 
+    python3 \
     python3-wxgtk4.0 \
-    python3-yaml \ 
+    python3-yaml \
     python3-typing-extensions \
     libcurl4 \
     libngspice0 \
@@ -184,6 +184,11 @@ RUN ldconfig -l /usr/bin/_pcbnew.kiface
 RUN apt-get clean autoclean; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
+
+# Setup UTF-8 locale
+ENV LANG=C.UTF-8
+ENV LANGUAGE=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 # Setup user
 RUN groupadd --gid $USER_GID $USER_NAME \
