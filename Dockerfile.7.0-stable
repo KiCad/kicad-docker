@@ -53,11 +53,13 @@ RUN set -ex; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
-# Now test the build, shipping a broken image doesn't help us
-# Maybe we should only run the cli tests but all of them is fine for now
+# Run QA by default; skip only when explicitly requested.
+ARG SKIP_QA=false
 RUN set -ex; \
-    cd build/linux; \
-    ctest --output-on-failure
+    if [ "$SKIP_QA" != "true" ]; then \
+        cd build/linux; \
+        ctest --output-on-failure; \
+    fi
 
 # Continue library installs
 RUN set -ex; \

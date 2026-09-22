@@ -48,6 +48,10 @@ Nightly monthly tagged releases will be kept at best effort for up to a year aft
 Users are encouraged to move to a stable release image when able.
 
 ## GitLab CI Usage
-KI_BUILD_TYPE=daily
-              monthly
-              release
+
+Select `build_type` when starting a pipeline: `daily`, `monthly`, `release8`,
+`release9`, or `release10`. Release builds also require `build_version`.
+
+The GitLab pipeline input `skip_qa` defaults to `false`, so QA runs for every build type.
+Set `skip_qa` to `true` when starting a pipeline to skip QA for that build.
+For a local Docker build, pass `--build-arg SKIP_QA=true` to skip QA; omitting it runs QA.

@@ -13,6 +13,10 @@ spec:
     build_version:
       description: "KiCad version to build, only used for release builds, this should be the release tag"
       default:
+    skip_qa:
+      description: "Skip QA tests during the Docker build"
+      type: boolean
+      default: false
 ---
 
 variables:
@@ -42,7 +46,7 @@ stages:
 .template:build_legacy:
   extends: .template:build_base
   script:
-    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="SKIP_QA=$[[ inputs.skip_qa ]]" -t kicad:build-temp -f ${DOCKERFILE_PATH} .
     - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
@@ -57,8 +61,8 @@ stages:
   services:
     - docker:24.0.9-dind
   script:
-    - docker build --pull --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
-    - docker build --pull --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="SKIP_QA=$[[ inputs.skip_qa ]]" --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="SKIP_QA=$[[ inputs.skip_qa ]]" --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
     - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
@@ -75,8 +79,8 @@ stages:
   services:
     - docker:24.0.9-dind
   script:
-    - docker build --pull --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
-    - docker build --pull --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" --build-arg="SKIP_QA=$[[ inputs.skip_qa ]]" --tag kicad:$ARCH-build-temp -f ${DOCKERFILE_PATH} .
+    - docker build --pull --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" --build-arg="SKIP_QA=$[[ inputs.skip_qa ]]" --build-arg="include_3d=true" --tag kicad:$ARCH-build-temp-full -f ${DOCKERFILE_PATH} .
     - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
@@ -90,7 +94,7 @@ stages:
 .template:build_release_legacy:
   extends: .template:build_base
   script:
-    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" .
+    - docker build --pull -t kicad:build-temp -f ${DOCKERFILE_PATH} --build-arg="KICAD_VERSION=$[[ inputs.build_version ]]" --build-arg="SKIP_QA=$[[ inputs.skip_qa ]]" .
     - echo $[[ inputs.build_type ]]
     - echo $CONTAINER_TAG
     - echo $GL_CONTAINER
